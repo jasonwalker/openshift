@@ -8,7 +8,7 @@ import random
 import uuid
 
 
-app = Flask(__name__)
+application = Flask(__name__)
 lock = Lock()
 visits = 0
 
@@ -54,36 +54,36 @@ def getVals(path):
         'visits':visits, 'remoteIp':request.remote_addr, 
         'requestHost':request.environ.get('HTTP_HOST','')}
     
-@app.route("/")
+@application.route("/")
 def root():
     return HTML_TEMPLATE.format(**getVals("root"))
 
-@app.route("/a")
+@application.route("/a")
 def a():
     return HTML_TEMPLATE.format(**getVals("a"))
 
-@app.route("/b")
+@application.route("/b")
 def b():
     return HTML_TEMPLATE.format(**getVals("b"))
     
-@app.route("/c")
+@application.route("/c")
 def c():
     return HTML_TEMPLATE.format(**getVals("c"))
     
-@app.route("/d")
+@application.route("/d")
 def d():
     return HTML_TEMPLATE.format(**getVals("d"))
     
-@app.route("/e")
+@application.route("/e")
 def e():
     return HTML_TEMPLATE.format(**getVals("e"))
 
-@app.route("/pause/<int:pauseTime>")
+@application.route("/pause/<int:pauseTime>")
 def pause(pauseTime):
     time.sleep(pauseTime)
     return HTML_TEMPLATE.format(**getVals("pause"))
 
-@app.route("/randpause/<int:pauseTime>")
+@application.route("/randpause/<int:pauseTime>")
 def randpause(pauseTime):
     time.sleep(random.randint(1,pauseTime))
     return HTML_TEMPLATE.format(**getVals("randpause"))
