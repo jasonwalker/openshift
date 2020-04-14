@@ -4,7 +4,7 @@ import os
 import socket
 import subprocess
 import time
-import random
+from random import randint
 import uuid
 
 
@@ -17,8 +17,11 @@ def format(d):
     for key in d.keys():
         out += '{:<16}{}\n'.format(key.decode('utf-8'), d[key].decode('utf-8'))
     return out
-        
-        
+
+def randhex():
+	return hex(randint(0,255))[2:].zfill(2)
+	
+color = '#' + randhex() + randhex() + randhex()
 
 HTML_TEMPLATE = '''\
 <html>
@@ -40,16 +43,12 @@ HTML_TEMPLATE = '''\
 </html>
 '''
 
-def color(number):
-    return "#" + hex(number % (255*255*255))[2:]
-
-
 def getVals(path):
     mac = uuid.getnode()
     global visits, ip
     with lock:
         visits += 1
-    return {'color':color(mac), 'service':str(mac), 'path':path, 
+    return {'color':color, 'service':str(mac), 'path':path, 
         'hostname':socket.gethostname(), 
         'visits':visits, 'remoteIp':request.remote_addr, 
         'requestHost':request.environ.get('HTTP_HOST','')}
@@ -90,6 +89,6 @@ def randpause(pauseTime):
 
 
 if __name__ == "__main__":
-    app.run(host='::', port=5555)
+    application.run(host='::', port=5555)
     print("stopped running")
 
