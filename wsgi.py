@@ -6,11 +6,16 @@ import subprocess
 import time
 from random import randint
 import uuid
+import netifaces
+import json
 
 
 application = Flask(__name__)
 lock = Lock()
 visits = 0
+
+def dump(obj):
+    return json.dumps(obj, sort_keys=True, indent=4, separators=(',', ': '))
 
 def format(d):
     out = ''
@@ -39,6 +44,8 @@ HTML_TEMPLATE = '''\
         <b>Visits:</b> {visits}<br/>
         <b>Remote IP:</b> {remoteIp}<br/>
         <b>Request's Host:</b> {requestHost}<br/><br/>
+        <b>Local IP Info</b>
+        <pre>{ip}</pre>
     </body>
 </html>
 '''
@@ -51,7 +58,8 @@ def getVals(path):
     return {'color':color, 'service':str(mac), 'path':path, 
         'hostname':socket.gethostname(), 
         'visits':visits, 'remoteIp':request.remote_addr, 
-        'requestHost':request.environ.get('HTTP_HOST','')}
+        'requestHost':request.environ.get('HTTP_HOST',''),
+        'ip': dump(netifaces.ifaddresses('eth0'))}
     
 @application.route("/")
 def root():
